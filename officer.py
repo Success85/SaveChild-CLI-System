@@ -1,54 +1,31 @@
-#!/usr/bin/env python3
-#officer operations
+from data_handler import init_db
 
-officers = {
-    "officer1": "901",
-    "officer2": "902"
-}
+# Officers for login
+officers = {"officer1": "901", "officer2": "902"}
 
-cases = [
-    {
-        "case_id": "C001",
-        "victim_name": "Alice",
-        "location": "Nigeria",
-        "abuse_type": "Physical",
-        "status": "Pending",
-        "notes": []
-    },
-    {
-        "case_id": "C002",
-        "victim_name": "Clary",
-        "location": "Ghana",
-        "abuse_type": "Sexual",
-        "status": "Under Investigation",
-        "notes": ["Visited location", "Interviewed victim"]
-    }
-]
-
-# Officer login 
+# OFFICER LOGIN
 def officer_login():
     print("\n--- OFFICER LOGIN ---")
-    username = input("Enter username: ")
-    password = input("Enter password: ")
-
+    username = input("Username: ").strip()
+    password = input("Password: ").strip()
     if username in officers and officers[username] == password:
-        print(f"✅ Login successful. Welcome Officer {username}!")
-        officer_menu()
+        print(f"Welcome Officer {username}!")
+        officer_menu(username)
     else:
-        print("Invalid username or password. Please try again.")
+        print("Invalid username/password")
+        pause()
 
-#Officer menu
-def officer_menu():
+
+#  OFFICER MENU
+def officer_menu(username):
     while True:
         print("\n--- OFFICER MENU ---")
         print("1. View All Cases")
         print("2. Search Case by ID")
         print("3. Filter Cases by Status")
-        print("4. Add Follow-up Note")
-        print("5. Mark Case Progress")
-        print("6. Logout")
-
-        choice = input("Enter your choice: ")
+        print("4. Update Case Status & Add Follow-up Note")
+        print("5. Logout")
+        choice = input("Choice: ").strip()
 
         if choice == "1":
             view_all_cases()
@@ -57,85 +34,91 @@ def officer_menu():
         elif choice == "3":
             filter_cases()
         elif choice == "4":
-            add_follow_up()
+            update_case_status(username)
         elif choice == "5":
-            update_case_status()
-        elif choice == "6":
-            print("👋 Logging out... Goodbye Officer!")
+            print("Logging out...")
             break
-        else:
-            print("⚠️ Invalid choice. Please try again.")
+       
 
-# 4. View All Cases
+
+#FUNCTION DEFINITIONS
 def view_all_cases():
-    print("\n--- ALL REPORTED CASES ---")
-    for case in cases:
-        print(f"Case ID: {case['case_id']}, Victim: {case['victim_name']}, "
-              f"Location: {case['location']}, Type: {case['abuse_type']}, "
-              f"Status: {case['status']}")
-    print("-----------------------------")
+    conn = init_db()
+    cursor = conn.cursor()
+    cursor.execute("SELECT * FROM cases")
+    rows = cursor.fetchall()
+
+    if rows:
+        print("\n--- All Cases ---")
+        for row in rows:
+            case_id, first_name, last_name, age, gender, location, abuse_type, follow_up, case_status, date_reported, follow_up_by, status_updated_by = row
+            print(f"ID:{case_id} | {first_name} {last_name} | Age:{age} | Gender:{gender} | "
+                  f"Location:{location} | Abuse:{abuse_type} | Follow-up:{follow_up} | "
+                  f"Status:{case_status} | Reported:{date_reported} | Followed-up by:{follow_up_by} | Status updated by:{status_updated_by}")
+    else:
+        print("No cases found.")
+
+    pause("Press Enter to return to Officer Menu...")
 
 
-# 5. Search Case by ID
 def search_case():
-    case_id = input("Enter Case ID to search: ")
-    found = False
+    conn = init_db()
+    cursor = conn.cursor()
+    
+    cursor.execute("SELECT * FROM cases WHERE case_id=%s", (case_id,))
+    row = cursor.fetchone()
 
-    for case in cases:
-        if case["case_id"].lower() == case_id.lower():
-            print("\n--- CASE DETAILS ---")
-            print(f"Case ID: {case['case_id']}")
-            print(f"Victim: {case['victim_name']}")
-            print(f"Location: {case['location']}")
-            print(f"Abuse Type: {case['abuse_type']}")
-            print(f"Status: {case['status']}")
-            print(f"Notes: {case['notes']}")
-            found = True
-            break
-
-    if not found:
+    if row:
+        print(row)
+    else:
         print("Case not found.")
 
-# 6. Filter Cases by Status
+    pause()
+
+
 def filter_cases():
-    status = input("Enter status (Pending, Under Investigation, In Court, Resolved): ")
-    print(f"\n--- CASES WITH STATUS '{status.upper()}' ---")
-    found = False
-    for case in cases:
-        if case["status"].lower() == status.lower():
-            print(f"Case ID: {case['case_id']}, Victim: {case['victim_name']}, Location: {case['location']}")
-            found = True
-    if not found:
-        print("No cases found with that status.")
+    conn = init_db()
+    cursor = conn.cursor()
+    status = input("Enter Status: ").strip()
+    
+    cursor.execute("SELECT * FROM cases WHERE case_status=%s", (status,))
+    rows = cursor.fetchall()
 
-# 7. Add Follow-up Note
+    if row:
+        for row in rows:
+            print(row)
+    else:
+        print("No cases found.")
 
-def add_follow_up():
-    case_id = input("Enter Case ID to add a note: ")
-    note = input("Enter your follow-up note: ")
-
-    for case in cases:
-        if case["case_id"].lower() == case_id.lower():
-            case["notes"].append(note)
-            print("✅ Note added successfully.")
-            return
-    print("Case not found.")
+    pause()
 
 
-# 8. Update Case Status
 def update_case_status():
-    case_id = input("Enter Case ID to update: ")
-    print("Available statuses: Pending → Under Investigation → In Court → Resolved")
-    new_status = input("Enter new status: ")
+    """
+    Update the case status AND automatically add a follow-up note.
+    """
+    conn = init_db()
+    cursor = conn.cursor()
+    case_id = input("Enter Case ID: ").strip()
+    if not case_id:
+        print("Case ID cannot be empty.")
+        return
 
-    for case in cases:
-        if case["case_id"].lower() == case_id.lower():
-            case["status"] = new_status
-            print(f"✅ Case {case_id} updated to '{new_status}'.")
-            return
-    print(" Case not found.")
+    status = input("New Status: ").strip()
+    note = input("Follow-up Note: ").strip()
+    if not status or not note:
+        print("Status and follow-up note cannot be empty.")
+        return
 
-# 9. Run file 
-if __name__ == "__main__":
-    officer_login()
-
+    query = """
+        UPDATE cases
+        SET case_status = %s,
+            follow_up = CONCAT(IFNULL(follow_up, ''), ' | ', %s),
+            follow_up_by = %s,
+            status_updated_by = %s
+        WHERE case_id = %s
+    """
+    cursor.execute(query, (status, note, username, username, case_id))
+    conn.commit()
+    print(f"Case updated to '{status}' with follow-up note by {username}.")
+    pause()
