@@ -1,40 +1,8 @@
 from data_handler import init_db, get_cursor
-
+from utils import get_string_info, get_age, get_gender
 
 conn = init_db()
 cursor = get_cursor()
-def get_string_info(prompt):
-    while True:
-        value = input(prompt).strip()
-        if value:
-            return value
-        else:
-            print("Field can't be empty!!!!")
-def get_age(prompt):
-    while True:
-        value = input(prompt).strip()
-        if value:
-            try:
-                value = int(value)
-                if value > 0:
-                    return value
-                else:
-                    print("Age must be greater than 0")
-            except:
-                print("Age must be a number")
-        else:
-            print("Age can't be empty")
-
-def get_gender(prompt):
-    while True:
-        value = input(prompt).strip().upper()
-        if value:
-            if value == "M" or value == "F":
-                return value
-            else:
-                print("Enter 'M,m' or 'F,f'")
-        else:
-            print("Gender can't be empty")
 
 def report_new_case():
     print("\n--- Report New Case ---")
@@ -81,38 +49,25 @@ def report_new_case():
     print("Your Case ID is:", cursor.lastrowid)
     print("-----------------------------------")
 
+
 def check_case_status():
     print("\n--- Check Case Status ---")
     while True:
-        case_id = input("Enter Case ID: ")
+        case_id = input("Enter Case ID: ").strip()
         if case_id:
-            query = "SELECT case_status FROM cases WHERE case_id = %s"
-            cursor.execute(query, (case_id,))
-            result = cursor.fetchone()
-
-            if result:
-                print("\nCase Status:", result[0])
+            try:
+                query = "SELECT case_status FROM cases WHERE case_id = %s"
+                cursor.execute(query, (case_id,))
+                result = cursor.fetchone()
+                if result:
+                    print("\nCase Status:", result[0])
+                    break
+                else:
+                    print("\nCase Not Found. Check the Case ID again.")
+                    print("-----------------------------------")
+                    break
+            except Exception as e:
+                print(f"Error querying database: {e}")
                 break
-            else:
-                print("\nCase Not Found. Check the Case ID again.")
-                print("-----------------------------------")
         else:
          print("Id can't be empty")
-
-    
-def report_menu():
-    while True:
-        print("\n--- Report Menu ---")
-        print("1. Report New Case")
-        print("2. Check Case Status")
-        print("3. Back to Main Menu")
-        choice = input("Enter choice: ")
-
-        if choice == '1':
-            report_new_case()
-        elif choice == '2':
-            check_case_status()
-        elif choice == '3':
-            break
-        else:
-            print("\nInvalid Choice. Try Again.")
