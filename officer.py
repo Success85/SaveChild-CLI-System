@@ -1,5 +1,5 @@
 from data_handler import init_db
-
+from utils import pause
 # Officers for login
 officers = {"officer1": "901", "officer2": "902"}
 
