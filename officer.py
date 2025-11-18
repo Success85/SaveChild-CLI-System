@@ -38,7 +38,8 @@ def officer_menu(username):
         elif choice == "5":
             print("Logging out...")
             break
-       
+       else:
+            print("Invalid choice. Try again.")
 
 
 #FUNCTION DEFINITIONS
