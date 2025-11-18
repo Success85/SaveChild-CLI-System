@@ -1,14 +1,8 @@
-import mysql.connector
+from data_handler import init_db, get_cursor
 
-# Database connection
-db = mysql.connector.connect(
-    host="",
-    user="",
-    password="",
-    database=""
-)
-cursor = db.cursor()
 
+conn = init_db()
+cursor = get_cursor()
 def get_string_info(prompt):
     while True:
         value = input(prompt).strip()
@@ -30,7 +24,7 @@ def get_age(prompt):
                 print("Age must be a number")
         else:
             print("Age can't be empty")
-            
+
 def get_gender(prompt):
     while True:
         value = input(prompt).strip().upper()
@@ -56,7 +50,7 @@ def report_new_case():
     print("3. Physical Abuse")
     print("4. Emotional Abuse")
     while True:
-        abuse_choice = input("Enter choice: ")
+        abuse_choice = input("Enter choice: ").strip()
         if abuse_choice:
             if abuse_choice == "1":
                abuse_type = "Domestic Abuse"
@@ -73,15 +67,15 @@ def report_new_case():
             else:
                print("Invalid Choise")
         else:
-            print("No choise entered")
+            print("Invalid Choise")
 
     query = """
-        INSERT INTO cases (first_name, last_name, age, gender, location, abuse_type, case_status)
-        VALUES (%s, %s, %s, %s, %s, %s, 'Pending')
+        INSERT INTO cases (first_name, last_name, age, gender, location, abuse_type)
+        VALUES (%s, %s, %s, %s, %s, %s)
     """
     values = (f_name, l_name, age, gender, location, abuse_type)
     cursor.execute(query, values)
-    db.commit()
+    conn.commit()
 
     print("\nCase Submitted Successfully!")
     print("Your Case ID is:", cursor.lastrowid)
