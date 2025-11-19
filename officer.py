@@ -65,6 +65,7 @@ def view_all_cases():
 def search_case():
     conn = init_db()
     cursor = conn.cursor()
+    case_id = input("Enter Case ID: ").strip()
     
     cursor.execute("SELECT * FROM cases WHERE case_id=%s", (case_id,))
     row = cursor.fetchone()
