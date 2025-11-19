@@ -38,7 +38,7 @@ def officer_menu(username):
         elif choice == "5":
             print("Logging out...")
             break
-       else:
+        else:
             print("Invalid choice. Try again.")
 
 
@@ -94,8 +94,7 @@ def filter_cases():
 
     pause()
 
-
-def update_case_status():
+def update_case_status(username):
     """
     Update the case status AND automatically add a follow-up note.
     """
