@@ -86,7 +86,7 @@ def filter_cases():
     cursor.execute("SELECT * FROM cases WHERE case_status=%s", (status,))
     rows = cursor.fetchall()
 
-    if row:
+    if rows:
         for row in rows:
             print(row)
     else:
