@@ -29,11 +29,11 @@ def officer_menu(username):
         choice = input("Choice: ").strip()
 
         if choice == "1":
-            view_all_cases()
+            view_assigned_cases(user['id'])
         elif choice == "2":
-            search_case()
+            view_pending_unassigned_cases()
         elif choice == "3":
-            filter_cases()
+            take_case(user['id'])
         elif choice == "4":
             update_case_status(username)
         elif choice == "5":
@@ -61,6 +61,21 @@ def view_all_cases():
 
     pause("Press Enter to return to Officer Menu...")
 
+def view_pending_unassigned_cases():
+    conn = get_conn()
+    cur = conn.cursor()
+    cur.execute("SELECT * FROM cases WHERE status='Pending' AND assigned_officer_id IS NULL ORDER BY created_at")
+    rows = cur.fetchall()
+    if not rows:
+        print("No pending unassigned cases.")
+    else:
+        for r in rows:
+            print("----------------------------------------")
+            print(f"Case ID: {r['case_id']} | Type: {r['abuse_type']} | Location: {r['location']}")
+            print(f"Victim: {r['victim_name']} Age: {r['victim_age']}")
+            print(f"Description: {r['description'][:120]}{'...' if len(r['description'])>120 else ''}")
+    conn.close()
+    pause()
 
 def search_case():
     conn = init_db()
@@ -73,6 +88,18 @@ def search_case():
         print(row)
     else:
         print("Case not found.")
+    
+        if row['assigned_officer_id'] == officer_id:
+            print("You are already assigned to this case.")
+        elif row['assigned_officer_id'] is not None:
+            print("Case is already assigned to another officer.")
+        else:
+            cur.execute("UPDATE cases SET assigned_officer_id=?, status=?, last_updated=? WHERE id=?",
+                        (officer_id, "Under Investigation", now_iso(), row['id']))
+            conn.commit()
+            print("Case assigned to you and status set to Under Investigation.")
+    conn.close()
+    pause()
 
     pause()
 

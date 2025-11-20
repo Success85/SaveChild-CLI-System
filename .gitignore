@@ -1,3 +1,6 @@
 *sql
+.env
+.venv
+venv/
 test_code.py
 __pycache__/
