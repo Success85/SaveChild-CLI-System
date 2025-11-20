@@ -156,4 +156,32 @@ def check_case_status():
 
         stored_secret = result
 
+        secret = input("Enter your secret word: ").strip()
         
+
+        if secret != stored_secret:
+            print("\n Secret word does NOT match. Access denied.")
+            continue
+
+        cursor.execute("""
+            SELECT first_name, last_name, age, gender, location,
+                    abuse_type, case_status, date_reported
+            FROM cases
+            WHERE case_id = %s
+                    """, (real_case_id,))
+
+        case = cursor.fetchone()
+
+        case = cursor.fetchone()
+
+        print("\nAccess granted! Here are your full case details:")
+        print("-----------------------------------------------")
+        print(f"First Name     : {case[0]}")
+        print(f"Last Name      : {case[1]}")
+        print(f"Age            : {case[2]}")
+        print(f"Gender         : {case[3]}")
+        print(f"Location       : {case[4]}")
+        print(f"Abuse Type     : {case[5]}")
+        print(f"Case Status    : {case[6]}")
+        print(f"Date Reported  : {case[7]}")
+        print("-----------------------------------------------")
