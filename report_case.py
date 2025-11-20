@@ -126,3 +126,34 @@ def check_case_status():
             print("Invalid choice.")
             continue
         cursor.execute(query, params)
+        rows = cursor.fetchall()
+
+        if not rows:
+            print("\nNo cases found.")
+            continue
+
+        print("\nMatching Cases:")
+        print("-----------------")
+
+
+        for i, r in enumerate(rows, start=1):
+            fn, ln, age, loc = r
+            print(f"{i}. Name: {fn[:3]}*** {ln[:3]}*** | Age: {age} | Location: {loc[:4]}***")
+
+        selection = input("\nWhich one is your case? Enter number: ").strip()
+
+        if not selection.isdigit() or not (1 <= int(selection) <= len(rows)):
+            print("Invalid selection.")
+            continue
+        real_case_id = rows[int(selection) - 1][0]
+
+        cursor.execute("SELECT secret_word FROM cases WHERE case_id = %s", (real_case_id,))
+        result = cursor.fetchone()
+
+        if not result:
+            print("Unexpected error: case disappeared.")
+            continue
+
+        stored_secret = result
+
+        
