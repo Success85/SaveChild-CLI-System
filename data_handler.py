@@ -68,7 +68,8 @@ def create_tables():
             location VARCHAR(100),
             abuse_type VARCHAR(50),
             case_status VARCHAR(50) DEFAULT 'Pending',
-            date_reported TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+            date_reported TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+            secret_word VARCHAR(100)
         )
     """)
 
