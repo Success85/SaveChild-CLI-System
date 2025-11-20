@@ -1,15 +1,11 @@
 # Coded by Cedric (so please if it doesn't work ask god not me cause I'm just as confused)
 
-import data_handler  
+import data_handler
 
 ADMIN_USERNAME = "admin"
-ADMIN_PASSWORD = "admin_work_sucks" 
+ADMIN_PASSWORD = "admin_Login123" 
 
 def login():
-    """
-    Handles the admin login process.
-    Returns True if login is successful, False otherwise.
-    """
     print("\n--- Admin Login ---")
     username = input("Enter username: ")
     password = input("Enter password: ")
@@ -22,19 +18,20 @@ def login():
         return False
 
 def view_all_reports():
-    """
-    Fetches and displays all reports from the data handler.
-    """
     print("\n--- All Submitted Reports ---")
-    reports = data_handler.read_reports() 
-    
+    reports = data_handler.read_reports()
+
     if not reports:
-        print("No reports found.")
+        print("No reports found in database.")
         return
 
     for report in reports:
         print("-" * 20)
         print("Case ID: {}".format(report.get('case_id')))
+        
+        full_name = "{} {}".format(report.get('first_name'), report.get('last_name'))
+        print("Name: {}".format(full_name))
+        
         print("Status: {}".format(report.get('status')))
         print("Location: {}".format(report.get('location')))
         print("Abuse Type: {}".format(report.get('abuse_type')))
@@ -43,12 +40,9 @@ def view_all_reports():
 
 
 def update_report_status():
-    """
-    Updates the status of a specific report.
-    """
     print("\n--- Update Report Status ---")
     case_id = input("Enter the Case ID of the report to update: ")
-    
+
     statuses = ["Pending", "Under Investigation", "In Court", "Resolved"]
     print("Select a new status:")
     for i, status in enumerate(statuses, 1):
@@ -58,7 +52,7 @@ def update_report_status():
         choice = int(input("Enter choice (1-4): "))
         if 1 <= choice <= 4:
             new_status = statuses[choice - 1]
-            
+
             if data_handler.update_status(case_id, new_status):
                 print("Successfully updated Case ID {} to '{}'.".format(case_id, new_status))
             else:
@@ -69,17 +63,13 @@ def update_report_status():
         print("Invalid input. Please enter a number.")
 
 def delete_report():
-    """
-    Deletes a specific report by its Case ID.
-    """
     print("\n--- Delete Report ---")
     case_id = input("Enter the Case ID of the report to DELETE: ")
-    
 
     confirm = input("Are you sure you want to PERMANENTLY delete Case ID {}? (yes/no): ".format(case_id)).lower()
-    
+
     if confirm == 'yes':
-        if data_handler.delete_report(case_id): 
+        if data_handler.delete_report(case_id):
             print("Successfully deleted Case ID {}.".format(case_id))
         else:
             print("Error: Case ID {} not found.".format(case_id))
@@ -87,11 +77,8 @@ def delete_report():
         print("Deletion cancelled.")
 
 def admin_menu():
-    """
-    The main menu for the admin after logging in.
-    """
     if not login():
-        return 
+        return
 
     while True:
         print("\n=== Admin Dashboard ===")
@@ -99,7 +86,7 @@ def admin_menu():
         print("2. Update a report status")
         print("3. Delete a report")
         print("4. Logout and return to Main Menu")
-        
+
         choice = input("Enter your choice (1-4): ")
 
         if choice == '1':
@@ -110,7 +97,7 @@ def admin_menu():
             delete_report()
         elif choice == '4':
             print("Logging out...")
-            break 
+            break
         else:
             print("Invalid choice. Please enter a number between 1 and 4.")
 
