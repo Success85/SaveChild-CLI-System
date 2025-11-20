@@ -1,17 +1,17 @@
-# data_handler.py
-
 import mysql.connector
 import os
+from dotenv import load_dotenv
+
+# Load environment variables from .env file
+load_dotenv()
 
 DB_CONFIG = {
-    "host": "save-the-child-alustudent-1554.f.aivencloud.com",
-    "user": "avnadmin",
+    "host": os.getenv("DB_HOST"),
+    "user": os.getenv("DB_USER"),
     "password": os.getenv("DB_PASSWORD"),
-    "database": "defaultdb",
-    "port": 11041
+    "database": os.getenv("DB_NAME"),
+    "port": int(os.getenv("DB_PORT")),
 }
-
-# PASSWORD = os.getenv("DB_PASSWORD")
 
 # Global connection object
 connection = None
