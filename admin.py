@@ -1,11 +1,11 @@
-# Coded by Cedric (so please if it doesn't work ask god not me cause I'm just as confused)
 
-import data_handler
+from data_handler import get_cursor
 
 ADMIN_USERNAME = "admin"
-ADMIN_PASSWORD = "admin_Login123" 
+ADMIN_PASSWORD = "admin_Login111" 
 
 def login():
+
     print("\n--- Admin Login ---")
     username = input("Enter username: ")
     password = input("Enter password: ")
@@ -19,24 +19,32 @@ def login():
 
 def view_all_reports():
     print("\n--- All Submitted Reports ---")
-    reports = data_handler.read_reports()
-
-    if not reports:
-        print("No reports found in database.")
-        return
-
-    for report in reports:
-        print("-" * 20)
-        print("Case ID: {}".format(report.get('case_id')))
+    
+    try:
+        conn = get_cursor() 
+        cursor = get_cursor() 
         
-        full_name = "{} {}".format(report.get('first_name'), report.get('last_name'))
-        print("Name: {}".format(full_name))
+        query = "SELECT case_id, first_name, last_name, location, abuse_type, case_status FROM cases"
+        cursor.execute(query)
         
-        print("Status: {}".format(report.get('status')))
-        print("Location: {}".format(report.get('location')))
-        print("Abuse Type: {}".format(report.get('abuse_type')))
-        print("Description: {}".format(report.get('description')))
-    print("-" * 20)
+        rows = cursor.fetchall()
+
+        if not rows:
+            print("No reports found in database.")
+        else:
+            for row in rows:
+                print("-" * 20)
+                print("Case ID: {}".format(row[0]))
+                print("Name: {} {}".format(row[1], row[2]))
+                print("Location: {}".format(row[3]))
+                print("Abuse Type: {}".format(row[4]))
+                print("Status: {}".format(row[5]))
+            print("-" * 20)
+            
+        cursor.close()
+
+    except Exception as e:
+        print("Error fetching reports: {}".format(e))
 
 
 def update_report_status():
@@ -52,15 +60,30 @@ def update_report_status():
         choice = int(input("Enter choice (1-4): "))
         if 1 <= choice <= 4:
             new_status = statuses[choice - 1]
-
-            if data_handler.update_status(case_id, new_status):
+            
+            cursor = get_cursor()
+            
+            check_query = "SELECT case_id FROM cases WHERE case_id = %s"
+            cursor.execute(check_query, (case_id,))
+            
+            if cursor.fetchone():
+                update_query = "UPDATE cases SET case_status = %s WHERE case_id = %s"
+                cursor.execute(update_query, (new_status, case_id))
+                
+                cursor._connection.commit()
+                
                 print("Successfully updated Case ID {} to '{}'.".format(case_id, new_status))
             else:
                 print("Error: Case ID {} not found.".format(case_id))
+            
+            cursor.close()
+            
         else:
             print("Invalid choice. Please select a number between 1 and 4.")
     except ValueError:
         print("Invalid input. Please enter a number.")
+    except Exception as e:
+        print("Database Error: {}".format(e))
 
 def delete_report():
     print("\n--- Delete Report ---")
@@ -69,10 +92,26 @@ def delete_report():
     confirm = input("Are you sure you want to PERMANENTLY delete Case ID {}? (yes/no): ".format(case_id)).lower()
 
     if confirm == 'yes':
-        if data_handler.delete_report(case_id):
-            print("Successfully deleted Case ID {}.".format(case_id))
-        else:
-            print("Error: Case ID {} not found.".format(case_id))
+        try:
+            cursor = get_cursor()
+            
+            check_query = "SELECT case_id FROM cases WHERE case_id = %s"
+            cursor.execute(check_query, (case_id,))
+            
+            if cursor.fetchone():
+                delete_query = "DELETE FROM cases WHERE case_id = %s"
+                cursor.execute(delete_query, (case_id,))
+                
+                cursor._connection.commit()
+                
+                print("Successfully deleted Case ID {}.".format(case_id))
+            else:
+                print("Error: Case ID {} not found.".format(case_id))
+            
+            cursor.close()
+            
+        except Exception as e:
+            print("Database Error: {}".format(e))
     else:
         print("Deletion cancelled.")
 
@@ -81,7 +120,7 @@ def admin_menu():
         return
 
     while True:
-        print("\n=== Admin Dashboard ===")
+        print("\n=== Admin Dashboard (MySQL) ===")
         print("1. View all reports")
         print("2. Update a report status")
         print("3. Delete a report")
