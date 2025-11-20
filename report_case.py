@@ -1,5 +1,5 @@
 from data_handler import init_db, get_cursor
-from utils import get_string_info, get_age, get_gender
+from utils import get_string_info, get_age, get_gender,pause
 
 # Get database connection and cursor safely
 conn = init_db()
@@ -57,7 +57,7 @@ def report_new_case():
     print("\nCase Submitted Successfully!")
     print("Your Case ID is:", cursor.lastrowid)
     print("-----------------------------------")
-    
+    pause()
 
 # Retrieves and displays the current status of a case using the provided case ID.
 def check_case_status():
@@ -87,3 +87,4 @@ def check_case_status():
                 break
         else:
          print("Id can't be empty")
+         pause("Press Enter to return to the main menu...")
