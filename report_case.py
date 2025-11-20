@@ -15,7 +15,7 @@ def report_new_case():
     age = get_age("Enter Age: ")
     gender = get_gender("Enter Gender (M/F): ")
     location = get_string_info("Enter Location: ")
-    secret_word = get_string_info("Enter a word you would remember to use as a passkey for your case: ")
+    secret_word = get_string_info("Enter a keyword you can remember for searching your case later: ")
 
     print("\nSelect Abuse Type:")
     print("1. Domestic Abuse")
