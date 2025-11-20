@@ -1,36 +1,33 @@
-# officer.py
-from data_handler import get_conn
-from utils import clear_screen, pause, verify_password
-import getpass
-from utils import now_iso
+from data_handler import init_db
 
+
+# Officers for login
+officers = {"officer1": "901", "officer2": "902"}
+
+# OFFICER LOGIN
 def officer_login():
-    clear_screen()
-    print("=== Officer Login ===")
+    print("\n--- OFFICER LOGIN ---")
     username = input("Username: ").strip()
-    password = getpass.getpass("Password: ")
-    conn = get_conn()
-    cur = conn.cursor()
-    cur.execute("SELECT * FROM users WHERE username=? AND role='officer'", (username,))
-    user = cur.fetchone()
-    conn.close()
-    if user and verify_password(user['password_hash'], password):
-        return dict(user)
+    password = input("Password: ").strip()
+    if username in officers and officers[username] == password:
+        print(f"Welcome Officer {username}!")
+        officer_menu(username)
     else:
-        print("Invalid officer credentials.")
+        print("Invalid username or password")
         pause()
-        return None
 
-def officer_menu(user):
+
+# OFFICER MENU 
+def officer_menu(username):
     while True:
-        clear_screen()
-        print(f"Officer Dashboard - {user['full_name'] or user['username']}")
-        print("1. View My Assigned Cases")
-        print("2. View Pending Unassigned Cases")
-        print("3. Take / Assign Case to Me")
-        print("4. Add Progress Note to a Case")
+        print("\n--- OFFICER MENU ---")
+        print("1. View All Cases")
+        print("2. Search Case by ID")
+        print("3. Filter Cases by Status")
+        print("4. Update Case Status & Add Follow-up Note")
         print("5. Logout")
-        choice = input("Choose: ").strip()
+        choice = input("Choice: ").strip()
+
         if choice == "1":
             view_assigned_cases(user['id'])
         elif choice == "2":
@@ -38,28 +35,31 @@ def officer_menu(user):
         elif choice == "3":
             take_case(user['id'])
         elif choice == "4":
-            add_progress_note(user['id'])
+            update_case_status(username)
         elif choice == "5":
+            print("Logging out...")
             break
-        else:
-            print("Invalid choice.")
-            pause()
+        
 
-def view_assigned_cases(officer_id):
-    conn = get_conn()
-    cur = conn.cursor()
-    cur.execute("SELECT * FROM cases WHERE assigned_officer_id = ? ORDER BY created_at DESC", (officer_id,))
-    rows = cur.fetchall()
-    if not rows:
-        print("No cases assigned to you yet.")
+
+# FUNCTION DEFINITIONS
+def view_all_cases():
+    conn = init_db()
+    cursor = conn.cursor()
+    cursor.execute("SELECT * FROM cases")
+    rows = cursor.fetchall()
+
+    if rows:
+        print("\n--- All Cases ---")
+        for row in rows:
+            case_id, first_name, last_name, age, gender, location, abuse_type, follow_up, case_status, date_reported, follow_up_by, status_updated_by = row
+            print(f"ID:{case_id} | {first_name} {last_name} | Age:{age} | Gender:{gender} | "
+                  f"Location:{location} | Abuse:{abuse_type} | Follow-up:{follow_up} | "
+                  f"Status:{case_status} | Reported:{date_reported} | Followed-up by:{follow_up_by} | Status updated by:{status_updated_by}")
     else:
-        for r in rows:
-            print("----------------------------------------")
-            print(f"Case ID: {r['case_id']} | Status: {r['status']} | Type: {r['abuse_type']}")
-            print(f"Victim: {r['victim_name']} Age: {r['victim_age']} | Location: {r['location']}")
-            print(f"Reported at: {r['created_at']} | Last updated: {r['last_updated']}")
-    conn.close()
-    pause()
+        print("No cases found.")
+
+    pause("Press Enter to return to Officer Menu...")
 
 def view_pending_unassigned_cases():
     conn = get_conn()
@@ -77,15 +77,18 @@ def view_pending_unassigned_cases():
     conn.close()
     pause()
 
-def take_case(officer_id):
-    conn = get_conn()
-    cur = conn.cursor()
-    case_id = input("Enter Case ID to take/assign to yourself: ").strip()
-    cur.execute("SELECT id, status, assigned_officer_id FROM cases WHERE case_id=?", (case_id,))
-    row = cur.fetchone()
-    if not row:
-        print("Case not found.")
+def search_case():
+    conn = init_db()
+    cursor = conn.cursor()
+    
+    cursor.execute("SELECT * FROM cases WHERE case_id=%s", (case_id,))
+    row = cursor.fetchone()
+
+    if row:
+        print(row)
     else:
+        print("Case not found.")
+    
         if row['assigned_officer_id'] == officer_id:
             print("You are already assigned to this case.")
         elif row['assigned_officer_id'] is not None:
@@ -98,22 +101,52 @@ def take_case(officer_id):
     conn.close()
     pause()
 
-def add_progress_note(user_id):
-    conn = get_conn()
-    cur = conn.cursor()
-    case_id = input("Enter Case ID to add note to: ").strip()
-    cur.execute("SELECT id, case_id, status FROM cases WHERE case_id=?", (case_id,))
-    row = cur.fetchone()
-    if not row:
-        print("Case not found.")
-        conn.close()
-        pause()
+    pause()
+
+
+def filter_cases():
+    conn = init_db()
+    cursor = conn.cursor()
+    status = input("Enter Status: ").strip()
+    
+    cursor.execute("SELECT * FROM cases WHERE case_status=%s", (status,))
+    rows = cursor.fetchall()
+
+    if row:
+        for row in rows:
+            print(row)
+    else:
+        print("No cases found.")
+
+    pause()
+
+
+def update_case_status():
+    """
+    Update the case status AND automatically add a follow-up note.
+    """
+    conn = init_db()
+    cursor = conn.cursor()
+    case_id = input("Enter Case ID: ").strip()
+    if not case_id:
+        print("Case ID cannot be empty.")
         return
-    note = input("Write your progress note (what was done, next steps): ").strip()
-    cur.execute("INSERT INTO notes (case_id, user_id, note, created_at) VALUES (?,?,?,?)",
-                (row['id'], user_id, note, now_iso()))
-    cur.execute("UPDATE cases SET last_updated=? WHERE id=?", (now_iso(), row['id']))
+
+    status = input("New Status: ").strip()
+    note = input("Follow-up Note: ").strip()
+    if not status or not note:
+        print("Status and follow-up note cannot be empty.")
+        return
+
+    query = """
+        UPDATE cases
+        SET case_status = %s,
+            follow_up = CONCAT(IFNULL(follow_up, ''), ' | ', %s),
+            follow_up_by = %s,
+            status_updated_by = %s
+        WHERE case_id = %s
+    """
+    cursor.execute(query, (status, note, username, username, case_id))
     conn.commit()
-    print("Note added.")
-    conn.close()
+    print(f"Case updated to '{status}' with follow-up note by {username}.")
     pause()
