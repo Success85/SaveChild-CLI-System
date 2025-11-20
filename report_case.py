@@ -15,6 +15,7 @@ def report_new_case():
     age = get_age("Enter Age: ")
     gender = get_gender("Enter Gender (M/F): ")
     location = get_string_info("Enter Location: ")
+    secret_word = get_string_info("Enter a word you would remember to use as a passkey for your case: ")
 
     print("\nSelect Abuse Type:")
     print("1. Domestic Abuse")
@@ -59,32 +60,69 @@ def report_new_case():
     print("-----------------------------------")
     pause()
 
+
+
+
+
 # Retrieves and displays the current status of a case using the provided case ID.
 def check_case_status():
     print("\n--- Check Case Status ---")
 
     # Keep asking until the user provides a non-empty ID
     while True:
-        case_id = input("Enter Case ID: ").strip()
-        if case_id:
-            try:
-                # Query the case status from the database for the given ID
-                query = "SELECT case_status FROM cases WHERE case_id = %s"
-                cursor.execute(query, (case_id,))
-                result = cursor.fetchone()
-                
-                # If the case exists, display its status
-                if result:
-                    print("\nCase Status:", result[0])
-                    break
-                else:
-                    # display a 'case ID not found in database' message6
-                    print("\nCase Not Found. Check the Case ID again.")
-                    print("-----------------------------------")
-                    break
-            except Exception as e:
-                print(f"Error querying database: {e}")
-                break
+        print("\nChoose a search method:")
+        print("1. Search by Name + Abuse Type")
+        print("2. Search Using Any Word You Remember")
+        print("3. Search by Name + Age")
+        print("4. Search by Name + Location")
+        print("5. Return to Main Menu")
+
+        choice = input("Enter choice: ").strip()
+        
+        if choice == "1":
+            first = get_string_info("Enter First Name: ")
+            abuse = get_string_info("Enter Abuse Type: ")
+            query = """
+                SELECT case_id, first_name, last_name, age, location 
+                FROM cases 
+                WHERE first_name = %s AND abuse_type = %s
+            """
+            params = (first, abuse)
+        elif choice == "2":
+            word = input("Enter any word you remember: ").strip()
+            like = f"%{word}%"
+            query = """
+                SELECT case_id, first_name, last_name, age, location 
+                FROM cases 
+                WHERE first_name LIKE %s 
+                   OR last_name LIKE %s
+                   OR location LIKE %s
+                   OR abuse_type LIKE %s
+                   OR secret_word LIKE %s
+            """
+            params = (like, like, like, like, like)
+        elif choice == "3":
+            first = input("Enter First Name: ").strip()
+            age = input("Enter Age: ").strip()
+            query = """
+                SELECT case_id, first_name, last_name, age, location 
+                FROM cases 
+                WHERE first_name = %s AND age = %s
+            """
+            params = (first, age)
+        elif choice == "4":
+            first = input("Enter First Name: ").strip()
+            loc = input("Enter Location: ").strip()
+            query = """
+                SELECT case_id, first_name, last_name, age, location 
+                FROM cases 
+                WHERE first_name = %s AND location = %s
+            """
+            params = (first, loc)
+
+        elif choice == "5":
+            return
         else:
-         print("Id can't be empty")
-         pause("Press Enter to return to the main menu...")
+            print("Invalid choice.")
+            continue
+        cursor.execute(query, params)

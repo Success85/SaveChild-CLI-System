@@ -1,3 +1,17 @@
+<<<<<<<<< Temporary merge branch 1
+# Coded by Cedric (so please if it doesn't work ask god not me cause I'm just as confused)
+
+import data_handler  
+
+ADMIN_USERNAME = "admin"
+ADMIN_PASSWORD = "admin_work_sucks" 
+
+def login():
+    """
+    Handles the admin login process.
+    Returns True if login is successful, False otherwise.
+    """
+=========
 
 from data_handler import get_cursor
 
@@ -6,6 +20,7 @@ ADMIN_PASSWORD = "admin_Login111"
 
 def login():
 
+>>>>>>>>> Temporary merge branch 2
     print("\n--- Admin Login ---")
     username = input("Enter username: ")
     password = input("Enter password: ")
@@ -18,6 +33,35 @@ def login():
         return False
 
 def view_all_reports():
+<<<<<<<<< Temporary merge branch 1
+    """
+    Fetches and displays all reports from the data handler.
+    """
+    print("\n--- All Submitted Reports ---")
+    reports = data_handler.read_reports() 
+    
+    if not reports:
+        print("No reports found.")
+        return
+
+    for report in reports:
+        print("-" * 20)
+        print("Case ID: {}".format(report.get('case_id')))
+        print("Status: {}".format(report.get('status')))
+        print("Location: {}".format(report.get('location')))
+        print("Abuse Type: {}".format(report.get('abuse_type')))
+        print("Description: {}".format(report.get('description')))
+    print("-" * 20)
+
+
+def update_report_status():
+    """
+    Updates the status of a specific report.
+    """
+    print("\n--- Update Report Status ---")
+    case_id = input("Enter the Case ID of the report to update: ")
+    
+=========
     print("\n--- All Submitted Reports ---")
     
     try:
@@ -51,6 +95,7 @@ def update_report_status():
     print("\n--- Update Report Status ---")
     case_id = input("Enter the Case ID of the report to update: ")
 
+>>>>>>>>> Temporary merge branch 2
     statuses = ["Pending", "Under Investigation", "In Court", "Resolved"]
     print("Select a new status:")
     for i, status in enumerate(statuses, 1):
@@ -61,6 +106,12 @@ def update_report_status():
         if 1 <= choice <= 4:
             new_status = statuses[choice - 1]
             
+<<<<<<<<< Temporary merge branch 1
+            if data_handler.update_status(case_id, new_status):
+                print("Successfully updated Case ID {} to '{}'.".format(case_id, new_status))
+            else:
+                print("Error: Case ID {} not found.".format(case_id))
+=========
             cursor = get_cursor()
             
             check_query = "SELECT case_id FROM cases WHERE case_id = %s"
@@ -78,10 +129,29 @@ def update_report_status():
             
             cursor.close()
             
+>>>>>>>>> Temporary merge branch 2
         else:
             print("Invalid choice. Please select a number between 1 and 4.")
     except ValueError:
         print("Invalid input. Please enter a number.")
+<<<<<<<<< Temporary merge branch 1
+
+def delete_report():
+    """
+    Deletes a specific report by its Case ID.
+    """
+    print("\n--- Delete Report ---")
+    case_id = input("Enter the Case ID of the report to DELETE: ")
+    
+
+    confirm = input("Are you sure you want to PERMANENTLY delete Case ID {}? (yes/no): ".format(case_id)).lower()
+    
+    if confirm == 'yes':
+        if data_handler.delete_report(case_id): 
+            print("Successfully deleted Case ID {}.".format(case_id))
+        else:
+            print("Error: Case ID {} not found.".format(case_id))
+=========
     except Exception as e:
         print("Database Error: {}".format(e))
 
@@ -112,20 +182,36 @@ def delete_report():
             
         except Exception as e:
             print("Database Error: {}".format(e))
+>>>>>>>>> Temporary merge branch 2
     else:
         print("Deletion cancelled.")
 
 def admin_menu():
+<<<<<<<<< Temporary merge branch 1
+    """
+    The main menu for the admin after logging in.
+    """
+    if not login():
+        return 
+
+    while True:
+        print("\n=== Admin Dashboard ===")
+=========
     if not login():
         return
 
     while True:
         print("\n=== Admin Dashboard (MySQL) ===")
+>>>>>>>>> Temporary merge branch 2
         print("1. View all reports")
         print("2. Update a report status")
         print("3. Delete a report")
         print("4. Logout and return to Main Menu")
+<<<<<<<<< Temporary merge branch 1
+        
+=========
 
+>>>>>>>>> Temporary merge branch 2
         choice = input("Enter your choice (1-4): ")
 
         if choice == '1':
@@ -136,7 +222,11 @@ def admin_menu():
             delete_report()
         elif choice == '4':
             print("Logging out...")
+<<<<<<<<< Temporary merge branch 1
+            break 
+=========
             break
+>>>>>>>>> Temporary merge branch 2
         else:
             print("Invalid choice. Please enter a number between 1 and 4.")
 
