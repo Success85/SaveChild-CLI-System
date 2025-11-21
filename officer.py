@@ -115,9 +115,8 @@ def filter_cases():
     rows = cursor.fetchall()
 
     if rows:
-        case_id, first_name, last_name, age, gender, location, abuse_type, status, date_reported, status_updated_by = row
         for row in rows:
-
+            case_id, first_name, last_name, age, gender, location, abuse_type, status, date_reported, status_updated_by = row
             print("\n------ CASE DETAILS ------")
             print(f"Case ID     : {case_id}")
             print(f"First Name  : {first_name}")
