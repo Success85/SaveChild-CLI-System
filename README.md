@@ -1,0 +1,1 @@
+A Python-based Command Line Interface (CLI) application designed to report, track, and manage child abuse cases. The system empowers users to safely report incidents, enables officers to follow up on investigations, and allows administrators to update case statuses — promoting justice, awareness, and accountability.
