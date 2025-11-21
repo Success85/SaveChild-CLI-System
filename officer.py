@@ -123,7 +123,7 @@ def update_case_status():
     query = """
         UPDATE cases
         SET case_status = %s,
-            follow_up = CONCAT(IFNULL(follow_up, ''), ' | ', %s),
+            follow_up_note = CONCAT(IFNULL(follow_up, ''), ' | ', %s),
             status_updated_by = %s
         WHERE case_id = %s
     """
