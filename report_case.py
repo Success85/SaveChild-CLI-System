@@ -137,7 +137,7 @@ def check_case_status():
 
 
         for i, r in enumerate(rows, start=1):
-            fn, ln, age, loc = r
+            cid,fn, ln, age, loc = r
             print(f"{i}. Name: {fn[:3]}*** {ln[:3]}*** | Age: {age} | Location: {loc[:4]}***")
 
         selection = input("\nWhich one is your case? Enter number: ").strip()
