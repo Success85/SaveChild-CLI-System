@@ -88,7 +88,7 @@ def show_safety_tips():
         tips = [
             "1. Always tell your Parents or any adult you know where you are going.",
             "2. Always report to an adult when you are being bullied or hurt.",
-            "3. Memorize emergency numbers like 112 or 116.",
+            "3. Remember emergency numbers like 112 or 116.",
             "4. Avoid going alone with strangers, even if they seem nice.",
             "5. Speak up if you or a friend feels unsafe — help is available.",
         ]
