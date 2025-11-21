@@ -154,10 +154,9 @@ def check_case_status():
             print("Unexpected error: case disappeared.")
             continue
 
-        stored_secret = result
+        stored_secret = result[0]
 
         secret = input("Enter your secret word: ").strip()
-        
 
         if secret != stored_secret:
             print("\n Secret word does NOT match. Access denied.")
@@ -165,12 +164,10 @@ def check_case_status():
 
         cursor.execute("""
             SELECT first_name, last_name, age, gender, location,
-                    abuse_type, case_status, date_reported
+                abuse_type, case_status, date_reported
             FROM cases
             WHERE case_id = %s
-                    """, (real_case_id,))
-
-        case = cursor.fetchone()
+            """, (real_case_id,))
 
         case = cursor.fetchone()
 
