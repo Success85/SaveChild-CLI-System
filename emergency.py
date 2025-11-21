@@ -34,6 +34,7 @@ def show_hotlines():
             {"Name": "Police Emergency", "Number": "112"},
             {"Name": "Health Emergency (Ambulance)", "Number": "122"},
             {"Name": "SaveChild Support Line", "Number": "+250 789 654 321"},
+            {"Name": "Counseling Support", "Number": "+250 788 123 456"},
         ]
 
         for h in hotlines:
@@ -63,7 +64,7 @@ def show_ngos():
             {"Name": "TerraBox Education & Safety Network",
                 "Contact": "+250 784 999 444", "Email": "outreach@terrabox.org"},
             {"Name": "Child Rescue Rwanda",
-             "Contact": "+250 785 222 333", "Email": "contact@childrescue.rw"},
+             "Contact": "+250 785 222 333", "Email": "contact@childrescue.org"},
 
         ]
 
