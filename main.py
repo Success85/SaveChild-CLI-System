@@ -25,7 +25,7 @@ def main_menu():
         elif choice == "3":
             officer.officer_login()
         elif choice == "4":
-            emergency.emergency_support()
+            emergency.show_emergency_menu()
         elif choice == "5":
             print("Goodbye!")
             sys.exit(0)

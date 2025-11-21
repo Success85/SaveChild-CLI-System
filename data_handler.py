@@ -33,7 +33,7 @@ def init_db():
         connection = mysql.connector.connect(**DB_CONFIG)
 
         if connection.is_connected():
-            print("Database connected successfully.")
+            # print("Database connected successfully.")
             return connection
         else:
             print("Database connection failed.")
