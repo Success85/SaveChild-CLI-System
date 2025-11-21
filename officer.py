@@ -18,14 +18,14 @@ def officer_login():
         global officer_id
         current_officer = username 
 
-        officer_menu(username)
+        officer_menu()
     else:
         print("Invalid username or password")
         pause()
 
 
 # OFFICER MENU 
-def officer_menu(username):
+def officer_menu():
     while True:
         print("\n--- OFFICER MENU ---")
         print("1. View All Cases")
@@ -60,9 +60,18 @@ def view_all_cases():
         print("\n--- All Cases ---")
         for row in rows:
                 case_id, first_name, last_name, age, gender, location, abuse_type,case_status, date_reported, status_updated_by = row
-                print(f"ID:{case_id} | {first_name} {last_name} | Age:{age} | Gender:{gender} | "
-                  f"Location:{location} | Abuse:{abuse_type} |"
-                  f"Status:{case_status} | Reported:{date_reported} | Status updated by: {status_updated_by}")
+                print("\n------ CASE DETAILS ------")
+                print(f"Case ID     : {case_id}")
+                print(f"First Name  : {first_name}")
+                print(f"Last Name   : {last_name}")
+                print(f"Age         : {age}")
+                print(f"Gender      : {gender}")
+                print(f"Location    : {location}")
+                print(f"Abuse Type  : {abuse_type}")
+                print(f"Status      : {case_status}")
+                print(f"Submitted on  : {date_reported}")
+                print(f"Status updated by     : {status_updated_by}")
+                
     else:
         print("No cases found.")
 
@@ -72,21 +81,21 @@ def search_case():
     conn = init_db()
     cursor = conn.cursor()
     case_id = input ("Enter ID: ")
-    cursor.execute("SELECT case_id, first_name, last_name, age, location, abuse_type, status, date_reported, follow_up_note, status_updated_by  FROM cases WHERE case_id=%s", (case_id,))
+    cursor.execute("SELECT case_id, first_name, last_name, age, gender, location, abuse_type, case_status, date_reported, follow_up_note, status_updated_by  FROM cases WHERE case_id=%s", (case_id,))
     row = cursor.fetchone()
 
     if row:
-        case_id, first_name, last_name, age, location, abuse_type, status, date_reported, follow_up_note, status_updated_by = row
+        case_id, first_name, last_name, age, gender, location, abuse_type, status, date_reported, follow_up_note, status_updated_by = row
         print("\n------ CASE DETAILS ------")
         print(f"Case ID     : {case_id}")
         print(f"First Name  : {first_name}")
         print(f"Last Name   : {last_name}")
         print(f"Age         : {age}")
+        print(f"Gender      : {gender}")
         print(f"Location    : {location}")
         print(f"Abuse Type  : {abuse_type}")
         print(f"Status      : {status}")
         print(f"Submitted on  : {date_reported}")
-        print(f"Status      : {status}")
         print(f"note     : {follow_up_note}")
         print(f"Status updated by     : {status_updated_by}")
         print("---------------------")
@@ -106,7 +115,7 @@ def filter_cases():
     rows = cursor.fetchall()
 
     if rows:
-        case_id, first_name, last_name, age, location, abuse_type, status, date_reported, status_updated_by = row
+        case_id, first_name, last_name, age, gender, location, abuse_type, status, date_reported, status_updated_by = row
         for row in rows:
 
             print("\n------ CASE DETAILS ------")
@@ -114,6 +123,7 @@ def filter_cases():
             print(f"First Name  : {first_name}")
             print(f"Last Name   : {last_name}")
             print(f"Age         : {age}")
+            print(f"Gender      : {gender}")
             print(f"Location    : {location}")
             print(f"Abuse Type  : {abuse_type}")
             print(f"Status      : {status}")
