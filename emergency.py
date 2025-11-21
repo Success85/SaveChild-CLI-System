@@ -38,6 +38,7 @@ def show_hotlines():
 
         for h in hotlines:
             print(f" - {h['Name']}: {h['Number']}")
+        print("---------------------------")
         print("\nIf you or someone else is in danger, call immediately!")
         print("\n0. Return to Emergency Support Menu")
 
@@ -67,6 +68,7 @@ def show_ngos():
             print(f"\nOrganization: {ngo['Name']}")
             print(f"Contact: {ngo['Contact']}")
             print(f"Email: {ngo['Email']}")
+            print("---------------------------")
 
         print(
             "\nYou can reach out for counseling, reporting abuse, or protection support.")
