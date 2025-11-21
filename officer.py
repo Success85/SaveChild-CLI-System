@@ -1,5 +1,5 @@
 from data_handler import init_db
-
+from utils import pause
 
 # Officers for login
 officers = {"officer1": "901", "officer2": "902"}
@@ -29,11 +29,11 @@ def officer_menu(username):
         choice = input("Choice: ").strip()
 
         if choice == "1":
-            view_assigned_cases(user['id'])
+            view_all_cases()
         elif choice == "2":
             view_pending_unassigned_cases()
         elif choice == "3":
-            take_case(user['id'])
+            filter_cases()
         elif choice == "4":
             update_case_status(username)
         elif choice == "5":
@@ -62,7 +62,7 @@ def view_all_cases():
     pause("Press Enter to return to Officer Menu...")
 
 def view_pending_unassigned_cases():
-    conn = get_conn()
+    conn = init_db()
     cur = conn.cursor()
     cur.execute("SELECT * FROM cases WHERE status='Pending' AND assigned_officer_id IS NULL ORDER BY created_at")
     rows = cur.fetchall()
