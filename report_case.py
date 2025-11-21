@@ -15,7 +15,7 @@ def report_new_case():
     age = get_age("Enter Age: ")
     gender = get_gender("Enter Gender (M/F): ")
     location = get_string_info("Enter Location: ")
-    secret_word = get_string_info("Enter a keyword you can remember for searching your case later: ")
+    secret_word = get_string_info("Enter a case access key: ")
 
     print("\nSelect Abuse Type:")
     print("1. Domestic Abuse")
@@ -56,7 +56,7 @@ def report_new_case():
     conn.commit()
 
     print("\nCase Submitted Successfully!")
-    print("Your Case ID is:", cursor.lastrowid)
+    # print("Your Case ID is:", cursor.lastrowid)
     print("-----------------------------------")
     pause()
 

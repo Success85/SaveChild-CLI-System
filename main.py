@@ -27,7 +27,7 @@ def main_menu():
         elif choice == "4":
             emergency.show_emergency_menu()
         elif choice == "5":
-            print("Goodbye!")
+            print("Goodbye! Thanks for using SafeChild CLI System.")
             sys.exit(0)
         else:
             print("Invalid choice.")
