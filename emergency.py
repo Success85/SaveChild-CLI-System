@@ -62,6 +62,9 @@ def show_ngos():
                 "Contact": "+250 788 333 555", "Email": "support@hopechild.org"},
             {"Name": "TerraBox Education & Safety Network",
                 "Contact": "+250 784 999 444", "Email": "outreach@terrabox.org"},
+            {"Name": "Child Rescue Rwanda",
+             "Contact": "+250 785 222 333", "Email": "contact@childrescue.rw"},
+
         ]
 
         for ngo in ngos:

@@ -3,9 +3,11 @@
 import os
 import time
 
+
 def clear_screen():
     # Clears the terminal (Windows or Mac/Linux)
     os.system("cls" if os.name == "nt" else "clear")
+
 
 def get_string_info(prompt):
     """Forces user to enter a non-empty string."""
@@ -14,6 +16,7 @@ def get_string_info(prompt):
         if value:
             return value
         print("Field can't be empty!")
+
 
 def get_age(prompt):
     """Validates that the input is a number > 0."""
@@ -28,7 +31,8 @@ def get_age(prompt):
             except:
                 print("Age must be a number")
         else:
-            print("Age can't be empty")
+            print("Age cannot be empty")
+
 
 def get_gender(prompt):
     """Validates input is M or F."""
@@ -41,6 +45,7 @@ def get_gender(prompt):
                 print("Enter 'M' or 'F'")
         else:
             print("Gender can't be empty")
+
 
 def pause(message="Press Enter to continue..."):
     input(message)
