@@ -71,7 +71,7 @@ def create_tables():
             date_reported TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
             secret_word VARCHAR(100),
             follow_up_note VARCHAR(100),
-            status_updated_by VARCHAR(100),
+            status_updated_by VARCHAR(100)
         )
     """)
 
