@@ -33,6 +33,20 @@ def get_age(prompt):
         else:
             print("Age cannot be empty")
 
+def get_phone_number(prompt):
+    while True:
+        phone = input(prompt).strip()
+        if not phone.isdigit():
+            print("Phone number must contain digits only.")
+            continue
+
+        if len(phone) < 7 or len(phone) > 15:
+            print("Phone number length must be between 7 and 15 digits.")
+            continue
+
+        return phone
+
+
 
 def get_gender(prompt):
     """Validates input is M or F."""
