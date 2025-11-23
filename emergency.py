@@ -55,7 +55,7 @@ def show_ngos():
     while True:
         print("\nPARTNER NGOs & CHILD PROTECTION ORGANIZATIONS")
         ngos = [
-            {"Name": "Save the Children", "Contact": "+234 787 555 6664",
+            {"Name": "Save the Children", "Contact": "+234 787 555 666",
                 "Email": "info@savethechildren.org"},
             {"Name": "UNICEF Child Protection Desk",
                 "Contact": "+234 780 111 222", "Email": "childhelp@unicef.org"},
