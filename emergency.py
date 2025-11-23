@@ -55,16 +55,16 @@ def show_ngos():
     while True:
         print("\nPARTNER NGOs & CHILD PROTECTION ORGANIZATIONS")
         ngos = [
-            {"Name": "Save the Children", "Contact": "+250 783 456 789",
+            {"Name": "Save the Children", "Contact": "+234 787 555 6664",
                 "Email": "info@savethechildren.org"},
             {"Name": "UNICEF Child Protection Desk",
-                "Contact": "+250 780 111 222", "Email": "childhelp@unicef.org"},
+                "Contact": "+234 780 111 222", "Email": "childhelp@unicef.org"},
             {"Name": "Hope for Every Child Foundation",
-                "Contact": "+250 788 333 555", "Email": "support@hopechild.org"},
+                "Contact": "+234 788 333 555", "Email": "support@hopechild.org"},
             {"Name": "TerraBox Education & Safety Network",
-                "Contact": "+250 784 999 444", "Email": "outreach@terrabox.org"},
-            {"Name": "Child Rescue Rwanda",
-             "Contact": "+250 785 222 333", "Email": "contact@childrescue.org"},
+                "Contact": "+234 784 999 444", "Email": "outreach@terrabox.org"},
+            {"Name": "Child Rescue Initiative",
+             "Contact": "+234 785 222 333", "Email": "contact@childrescue.org"},
 
         ]
 
@@ -95,6 +95,8 @@ def show_safety_tips():
             "3. Remember emergency numbers like 112 or 116.",
             "4. Avoid going alone with strangers, even if they seem nice.",
             "5. Speak up if you or a friend feels unsafe — help is available.",
+            "6. Trust your instincts; if something feels wrong, seek help immediately.",
+            "7. Always stay in groups when outside, especially in unfamiliar places."
         ]
 
         for tip in tips:
