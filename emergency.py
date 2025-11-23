@@ -33,8 +33,8 @@ def show_hotlines():
             {"Name": "Child Helpline", "Number": "116"},
             {"Name": "Police Emergency", "Number": "112"},
             {"Name": "Health Emergency (Ambulance)", "Number": "122"},
-            {"Name": "SaveChild Support Line", "Number": "+250 789 654 321"},
-            {"Name": "Counseling Support", "Number": "+250 788 123 456"},
+            {"Name": "SaveChild Support Line", "Number": "+234 789 654 321"},
+            {"Name": "Counseling Support", "Number": "+234 788 123 456"},
         ]
 
         for h in hotlines:
