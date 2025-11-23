@@ -1,5 +1,5 @@
 from data_handler import init_db, get_cursor
-from utils import get_string_info, get_age, get_gender,pause
+from utils import get_string_info, get_age, get_gender,get_phone_number,pause
 
 # Get database connection and cursor safely
 conn = init_db()
@@ -15,6 +15,7 @@ def report_new_case():
     age = get_age("Enter Age: ")
     gender = get_gender("Enter Gender (M/F): ")
     location = get_string_info("Enter Location: ").capitalize()
+    Phone_number = get_phone_number("Enter phone number: ")
     secret_word = get_string_info("Enter a case access key: ")
 
     print("\nSelect Abuse Type:")
@@ -46,10 +47,10 @@ def report_new_case():
 
     # Prepare the SQL insert query
     query = """
-        INSERT INTO cases (first_name, last_name, age, gender, location, abuse_type, secret_word)
-        VALUES (%s, %s, %s, %s, %s, %s, %s)
+        INSERT INTO cases (first_name, last_name, age, gender,Phone_number, location, abuse_type, secret_word)
+        VALUES (%s, %s, %s, %s, %s, %s,  %s, %s)
     """
-    values = (f_name, l_name, age, gender, location, abuse_type,secret_word)
+    values = (f_name, l_name, age, gender, location, Phone_number, abuse_type,secret_word)
     
     # Insert the record into the database
     cursor.execute(query, values)
@@ -70,65 +71,26 @@ def check_case_status():
 
     # Keep asking until the user provides a non-empty ID
     while True:
-        print("\nChoose a search method:")
-        print("1. Search by Name + Abuse Type")
-        print("2. Search Using Any Word You Remember")
-        print("3. Search by Name + Age")
-        print("4. Search by Name + Location")
-        print("5. Return to Main Menu")
-
+        print("1. Search by Name and phone number")
+        print("2. Return to main menu")
         choice = input("Enter choice: ").strip()
-        
+ 
         if choice == "1":
             first = get_string_info("Enter First Name: ").capitalize()
-            abuse = get_string_info("Enter Abuse Type: ").capitalize()
+            last = get_string_info("Enter Last Name: ").capitalize()
+            phone_number = get_phone_number("Enter phone number: ")
             query = """
-                SELECT case_id, first_name, last_name, age, location 
+                SELECT case_id, first_name, last_name, age,phone_number, location 
                 FROM cases 
-                WHERE first_name = %s AND abuse_type = %s
+                WHERE first_name = %s AND last_name = %s AND phone_number = %s
             """
-            params = (first, abuse)
+            params = (first, last, phone_number)
         elif choice == "2":
-            word = input("Enter any word you remember: ").strip()
-            if word:
-                like = f"%{word}%"
-                query = """
-                    SELECT case_id, first_name, last_name, age, location 
-                    FROM cases 
-                    WHERE first_name LIKE %s 
-                    OR last_name LIKE %s
-                    OR location LIKE %s
-                    OR abuse_type LIKE %s
-                    OR secret_word LIKE %s
-                """
-                params = (like, like, like, like, like)
-            else:
-                print("Word can not be empty!!")
-                continue
-        elif choice == "3":
-            first = input("Enter First Name: ").strip().capitalize()
-            age = input("Enter Age: ").strip()
-            query = """
-                SELECT case_id, first_name, last_name, age, location 
-                FROM cases 
-                WHERE first_name = %s AND age = %s
-            """
-            params = (first, age)
-        elif choice == "4":
-            first = input("Enter First Name: ").strip().capitalize()
-            loc = input("Enter Location: ").strip().capitalize()
-            query = """
-                SELECT case_id, first_name, last_name, age, location 
-                FROM cases 
-                WHERE first_name = %s AND location = %s
-            """
-            params = (first, loc)
-
-        elif choice == "5":
             return
         else:
             print("Invalid choice.")
             continue
+
         cursor.execute(query, params)
         rows = cursor.fetchall()
 
@@ -141,8 +103,8 @@ def check_case_status():
 
 
         for i, r in enumerate(rows, start=1):
-            cid,fn, ln, age, loc = r
-            print(f"{i}. Name: {fn} {ln} | Age: {age} | Location: {loc}")
+            cid,fn, ln, age, p_num, loc = r
+            print(f"{i}. Name: {fn} {ln} | Age: {age} | Phone number: {p_num} | Location: {loc}")
 
         selection = input("\nWhich one is your case? Enter number: ").strip()
 
@@ -160,7 +122,7 @@ def check_case_status():
 
         stored_secret = result[0]
 
-        secret = input("Enter your secret word: ").strip()
+        secret = input("Enter your secret key word: ").strip()
 
         if secret != stored_secret:
             print("\n Secret word does NOT match. Access denied.")
@@ -168,7 +130,8 @@ def check_case_status():
 
         cursor.execute("""
             SELECT first_name, last_name, age, gender, location,
-                abuse_type, case_status, date_reported
+                abuse_type, case_status,  follow_up_note,
+                status_updated_by, date_reported
             FROM cases
             WHERE case_id = %s
             """, (real_case_id,))
@@ -184,5 +147,7 @@ def check_case_status():
         print(f"Location       : {case[4]}")
         print(f"Abuse Type     : {case[5]}")
         print(f"Case Status    : {case[6]}")
-        print(f"Date Reported  : {case[7]}")
+        print(f"follow up note : {case[7]}")
+        print(f"status_updated_by : {case[8]}")
+        print(f"Date Reported  : {case[9]}")
         print("-----------------------------------------------")
