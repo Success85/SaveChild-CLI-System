@@ -50,7 +50,7 @@ def report_new_case():
         INSERT INTO cases (first_name, last_name, age, gender,Phone_number, location, abuse_type, secret_word)
         VALUES (%s, %s, %s, %s, %s, %s,  %s, %s)
     """
-    values = (f_name, l_name, age, gender, location, Phone_number, abuse_type,secret_word)
+    values = (f_name, l_name, age, gender, Phone_number,location, abuse_type,secret_word)
     
     # Insert the record into the database
     cursor.execute(query, values)
