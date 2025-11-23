@@ -10,11 +10,11 @@ def report_new_case():
     print("\n--- Report New Case ---")
     
     # Collect basic personal information
-    f_name = get_string_info("Enter First Name: ")
-    l_name = get_string_info("Enter Last Name: ")
+    f_name = get_string_info("Enter First Name: ").capitalize()
+    l_name = get_string_info("Enter Last Name: ").capitalize()
     age = get_age("Enter Age: ")
     gender = get_gender("Enter Gender (M/F): ")
-    location = get_string_info("Enter Location: ")
+    location = get_string_info("Enter Location: ").capitalize()
     secret_word = get_string_info("Enter a case access key: ")
 
     print("\nSelect Abuse Type:")
@@ -80,8 +80,8 @@ def check_case_status():
         choice = input("Enter choice: ").strip()
         
         if choice == "1":
-            first = get_string_info("Enter First Name: ")
-            abuse = get_string_info("Enter Abuse Type: ")
+            first = get_string_info("Enter First Name: ").capitalize()
+            abuse = get_string_info("Enter Abuse Type: ").capitalize()
             query = """
                 SELECT case_id, first_name, last_name, age, location 
                 FROM cases 
@@ -102,7 +102,7 @@ def check_case_status():
             """
             params = (like, like, like, like, like)
         elif choice == "3":
-            first = input("Enter First Name: ").strip()
+            first = input("Enter First Name: ").strip().capitalize()
             age = input("Enter Age: ").strip()
             query = """
                 SELECT case_id, first_name, last_name, age, location 
@@ -111,8 +111,8 @@ def check_case_status():
             """
             params = (first, age)
         elif choice == "4":
-            first = input("Enter First Name: ").strip()
-            loc = input("Enter Location: ").strip()
+            first = input("Enter First Name: ").strip().capitalize()
+            loc = input("Enter Location: ").strip().capitalize()
             query = """
                 SELECT case_id, first_name, last_name, age, location 
                 FROM cases 
