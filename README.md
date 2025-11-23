@@ -84,6 +84,7 @@ Last updated timestamp
 | first_name / last_name | Victim identity                    |
 | age                    | Victim's age                       |
 | gender                 | Victim’s gender                    |
+| phone number           | Victim's phone number              |
 | abuse_type             | Type of abuse reported             |
 | location               | Where the incident happened        |
 | secret_word            | User’s access key                  |
