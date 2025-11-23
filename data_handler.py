@@ -65,6 +65,7 @@ def create_tables():
             last_name VARCHAR(50),
             age INT,
             gender CHAR(1),
+            phone_number VARCHAR(25),
             location VARCHAR(100),
             abuse_type VARCHAR(50),
             case_status VARCHAR(50) DEFAULT 'Pending',
