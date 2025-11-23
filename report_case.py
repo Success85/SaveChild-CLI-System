@@ -90,17 +90,21 @@ def check_case_status():
             params = (first, abuse)
         elif choice == "2":
             word = input("Enter any word you remember: ").strip()
-            like = f"%{word}%"
-            query = """
-                SELECT case_id, first_name, last_name, age, location 
-                FROM cases 
-                WHERE first_name LIKE %s 
-                   OR last_name LIKE %s
-                   OR location LIKE %s
-                   OR abuse_type LIKE %s
-                   OR secret_word LIKE %s
-            """
-            params = (like, like, like, like, like)
+            if word:
+                like = f"%{word}%"
+                query = """
+                    SELECT case_id, first_name, last_name, age, location 
+                    FROM cases 
+                    WHERE first_name LIKE %s 
+                    OR last_name LIKE %s
+                    OR location LIKE %s
+                    OR abuse_type LIKE %s
+                    OR secret_word LIKE %s
+                """
+                params = (like, like, like, like, like)
+            else:
+                print("Word can not be empty!!")
+                continue
         elif choice == "3":
             first = input("Enter First Name: ").strip().capitalize()
             age = input("Enter Age: ").strip()
